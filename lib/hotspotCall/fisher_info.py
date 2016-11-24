@@ -151,7 +151,7 @@ class FisherInfo:
         if base in 'ATGCatgc':
             ord_qual = (int(ord(qual))-33)
             q = quals[base]
-            q.append(min(ord_qual,40))
+            q.append(min(ord_qual,41))
 
     def add_tumor_quals(self, base, qual):
         self.add_quals(self.tumor_quals, base, qual)
