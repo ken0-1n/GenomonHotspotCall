@@ -1,71 +1,57 @@
 #! /usr/bin/env python
 
-# import process_vcf
 import process_mutation
-# import get_eb_score
-# import sys, os, subprocess, math, re, multiprocessing 
 import sys, os, subprocess
-# import vcf, pysam, numpy
-# import vcf
-
-
-def worker_vcf(targetBamPath, controlBamPath, outputPath, hotspotList, mapping_qual_thres, base_qual_thres, min_allele_thres):
-
-    # generate file
-    process_mutation.call(hotspotList, outputPath + '.target.vcf', targetBamPath, controlBamPath, mapping_qual_thres, base_qual_thres, min_allele_thres)
-
-
-def worker_anno(targetBamPath, controlBamPath, outputPath, hotspotList, mapping_qual_thres, base_qual_thres, min_allele_thres):
-
-    # generate file
-    process_mutation.call(hotspotList, outputPath + '.target.anno', targetBamPath, controlBamPath, mapping_qual_thres, base_qual_thres, min_allele_thres)
-
 
 def main(args):
 
     # should add validity check for arguments
-    targetBamPath = args.targetBamPath
-    controlBamPath = args.controlBamPath
-    outputPath = args.outputPath
-    hotspotList= args.hotspotList
-
-    mapping_qual_thres = args.q
-    base_qual_thres = args.Q
-    min_allele_thres = args.m
-    is_anno = True if args.f == 'anno' else False
+    tumor_bam = args.tumor_bam
+    control_bam = args.control_bam
+    output = args.output
+    hotspot_file= args.hotspot_file
+    # options
+    mpileup_params = args.S
+    min_tumor_misrate = args.t
+    max_ctrl_misrate = args.c
+    ratio_control = args.R
+    min_lod_score = args.m
+    rna_bam = args.r
+    is_rna = True if rna_bam else False
 
     # file existence check
-    if not os.path.exists(targetBamPath):
-        print >> sys.stderr, "No target bam file: " + targetBamPath
+    if not os.path.exists(tumor_bam):
+        print >> sys.stderr, "No tumor bam file: " + tumor_bam
         sys.exit(1)
 
-    if not os.path.exists(targetBamPath + ".bai") and not os.path.exists(re.sub(r'bam$', "bai", targetBamPath)):
-        print >> sys.stderr, "No index for target bam file: " + targetBamPath
+    if not os.path.exists(tumor_bam + ".bai") and not os.path.exists(re.sub(r'bam$', "bai", tumor_bam)):
+        print >> sys.stderr, "No index for tumor bam file: " + tumor_bam
         sys.exit(1)
 
-    if not os.path.exists(controlBamPath):
-        print >> sys.stderr, "No control bam file: " + controlBamPath
+    if not os.path.exists(control_bam):
+        print >> sys.stderr, "No control bam file: " + control_bam
         sys.exit(1)
 
-    if not os.path.exists(controlBamPath + ".bai") and not os.path.exists(re.sub(r'bam$', "bai", controlBamPath)):
-        print >> sys.stderr, "No index for control bam file: " + controlBamPath
+    if not os.path.exists(control_bam + ".bai") and not os.path.exists(re.sub(r'bam$', "bai", control_bam)):
+        print >> sys.stderr, "No index for control bam file: " + control_bam
         sys.exit(1)
 
-    if not os.path.exists(hotspotList):
-        print >> sys.stderr, "No hotspot mutations list: " + hotspotList
+    if not os.path.exists(hotspot_file):
+        print >> sys.stderr, "No hotspot mutations list: " + hotspot_file
         sys.exit(1)
 
-    outputDir = os.path.dirname(outputPath)
+    if is_rna:
+        if not os.path.exists(rna_bam):
+            print >> sys.stderr, "No rna bam file: " + rna_bam
+            sys.exit(1)
+
+        if not os.path.exists(rna_bam + ".bai") and not os.path.exists(re.sub(r'bam$', "bai", rna_bam)):
+            print >> sys.stderr, "No index for rna bam file: " + rna_bam
+            sys.exit(1)
+
+    outputDir = os.path.dirname(output)
     if not os.path.exists(outputDir):
         os.mkdir(outputDir)
 
-    # non multi-threading mode
-    if is_anno == True:
-        worker_anno(targetBamPath, controlBamPath, outputPath, hotspotList, mapping_qual_thres, base_qual_thres, min_allele_thres)
-    else: 
-        worker_vcf(targetBamPath, controlBamPath, outputPath, hotspotList, mapping_qual_thres, base_qual_thres, min_allele_thres)
-
-    # delete intermediate files
-    # os.unlink(outputPath + '.target.pileup')
-
+    process_mutation.call(hotspot_file, output + '.tumor.anno', tumor_bam, control_bam, mpileup_params, min_tumor_misrate, max_ctrl_misrate, rna_bam, min_lod_score, ratio_control)
 
