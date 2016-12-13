@@ -115,12 +115,13 @@ class FisherInfo:
         for base, qual in zip(tumor_bases, mp_list[5]):
             self.add_tumor_quals(base, qual)
 
-        ctrl_bases = self.bases_format_process(mp_list[7], mp_list[8])
-        for base in ctrl_bases:
-            self.add_ctrl_base(base)
+        if len(mp_list) > 7:
+            ctrl_bases = self.bases_format_process(mp_list[7], mp_list[8])
+            for base in ctrl_bases:
+                self.add_ctrl_base(base)
 
-        for base, qual in zip(ctrl_bases, mp_list[8]):
-            self.add_ctrl_quals(base, qual)
+            for base, qual in zip(ctrl_bases, mp_list[8]):
+                self.add_ctrl_quals(base, qual)
 
         if len(mp_list) > 10:
             rna_bases = self.bases_format_process(mp_list[10], mp_list[11])
@@ -258,13 +259,13 @@ class FisherInfo:
             return (mis_base_count_plus / float(mis_base_count_plus + mis_base_count_minus))
             
     def get_tumor_strand_ratio(self,base):
-        return self.get_strand_ratio(self.get_tumor_plus_strand(base), self.get_tumor_minus_strand(base))
+        return self.get_strand_ratio(self.get_tumor_base_plus_strand(base), self.get_tumor_base_minus_strand(base))
             
     def get_ctrl_strand_ratio(self, base):
-        return self.get_strand_ratio(self.get_ctrl_plus_strand(base), self.get_ctrl_minus_strand(base))
+        return self.get_strand_ratio(self.get_ctrl_base_plus_strand(base), self.get_ctrl_base_minus_strand(base))
 
     def get_rna_strand_ratio(self, base):
-        return self.get_strand_ratio(self.get_rna_plus_strand(base), self.get_rna_minus_strand(base))
+        return self.get_strand_ratio(self.get_rna_plus_base_strand(base), self.get_rna_base_minus_strand(base))
 
     def get_fisher_pvalue(self,base):
         odds_ratio, fisher_pvalue = fisher(

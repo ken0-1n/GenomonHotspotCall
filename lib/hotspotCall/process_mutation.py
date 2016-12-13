@@ -34,7 +34,7 @@ def call(hotspot_file, output_file, bam_tumor, bam_control, mpileup_params, min_
     hOUT = open(output_file, 'w')
     FNULL = open(os.devnull, 'w')
 
-    header_str = "chr\tstart\tend\tref\talt\tdepth\tvariant\tbases_tumor\tbases_normal\tmisRate_tumor\tmisRate_normal\tscore\tqual_median"
+    header_str = "Chr\tStart\tEnd\tRef\tAlt\tdepth_tumor\tvariantNum_tumor\tdepth_normal\tvariantNum_normal\tbases_tumor\tbases_normal\tA_C_G_T_tumor\tA_C_G_T_normal\tmisRate_tumor\tstrandRatio_tumor\tmisRate_normal\tstrandRatio_normal\tP-value(fisher)\tscore"
     if is_rna:
         header_str = header_str +"\tdepth_RNA\tvariant_RNA\tbases_RNA\ttmisRate_RNA"
     print >> hOUT, header_str
