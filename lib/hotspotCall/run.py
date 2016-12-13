@@ -8,7 +8,7 @@ def main(args):
     # should add validity check for arguments
     tumor_bam = args.tumor_bam
     control_bam = args.control_bam
-    output = args.output
+    output = args.output_file
     hotspot_file= args.hotspot_file
     # options
     mpileup_params = args.S
