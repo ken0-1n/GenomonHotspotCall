@@ -49,9 +49,5 @@ def main(args):
             print >> sys.stderr, "No index for rna bam file: " + rna_bam
             sys.exit(1)
 
-    outputDir = os.path.dirname(output)
-    if not os.path.exists(outputDir):
-        os.mkdir(outputDir)
-
-    process_mutation.call(hotspot_file, output + '.tumor.anno', tumor_bam, control_bam, mpileup_params, min_tumor_misrate, max_ctrl_misrate, rna_bam, min_lod_score, ratio_control)
+    process_mutation.call(hotspot_file, output, tumor_bam, control_bam, mpileup_params, min_tumor_misrate, max_ctrl_misrate, rna_bam, min_lod_score, ratio_control)
 
