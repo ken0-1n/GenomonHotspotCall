@@ -38,3 +38,6 @@ optional arguments:
   -r rna.bam             The path to the RNA bam file
 ```
 
+We use this tool to create the hotspot_mutations.bed.
+https://github.com/ken0-1n/GenomonHotspotDatabase
+
