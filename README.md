@@ -16,6 +16,8 @@ python setup.py install
 ```
 
 ## Run
+
+```
 $ hotspotCall -h
 usage: hotspotCall [-h] [--version] [-S samtools_params] [-t min_tumor_misrate] [-c max_control_misrate] [-R T/N ratio_control] [-m min_lod_score] [-r rna.bam] tumor.bam control.bam output_file hotspot_mutations.bed
 
