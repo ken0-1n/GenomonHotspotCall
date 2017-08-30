@@ -29,13 +29,13 @@ positional arguments:
                         the bed format file that lists mutations
 
 optional arguments:
-  -h, --help            show this help message and exit
-  --version             show program's version number and exit
-  -S samtools_params
-  -t min_tumor_misrate
-  -c max_control_misrate
+  -h, --help             show this help message and exit
+  --version              show program's version number and exit
+  -S samtools_params　　　  samtools params
+  -t min_tumor_misrate   minimum amount of tumor allele frequency (default 0.1)
+  -c max_control_misrate maximum amount of control allele frequency (default 0.1)
   -R T/N ratio_control
-  -m min_lod_score
-  -r rna.bam            the path to the RNA bam file
+  -m min_lod_score       minimum lod score (default 8.0)
+  -r rna.bam             the path to the RNA bam file
 ```
 
