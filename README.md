@@ -22,19 +22,19 @@ $ hotspotCall -h
 usage: hotspotCall [-h] [--version] [-S samtools_params] [-t min_tumor_misrate] [-c max_control_misrate] [-R T/N ratio_control] [-m min_lod_score] [-r rna.bam] tumor.bam control.bam output_file hotspot_mutations.bed
 
 positional arguments:
-  tumor.bam              the path to the tumor bam file
-  control.bam            the path to the control bam file
-  output_file            the path to the output file
-  hotspot_mutations.bed  the bed format file that lists mutations
+  tumor.bam              The path to the tumor bam file
+  control.bam            The path to the control bam file
+  output_file            The path to the output file
+  hotspot_mutations.bed  The bed format file that lists mutations
                         
 optional arguments:
-  -h, --help             show this help message and exit
-  --version              show program's version number and exit
-  -S samtools_params　　　  samtools params
-  -t min_tumor_misrate   minimum amount of tumor allele frequency (default 0.1)
-  -c max_control_misrate maximum amount of control allele frequency (default 0.1)
-  -R T/N ratio_control   maximum value of the ratio between normal and tumor (default 0.1)
-  -m min_lod_score       minimum lod score (default 8.0)
-  -r rna.bam             the path to the RNA bam file
+  -h, --help             Show this help message and exit
+  --version              Show program's version number and exit
+  -S samtools_params     Samtools params
+  -t min_tumor_misrate   Minimum amount of tumor allele frequency (default 0.1)
+  -c max_control_misrate Maximum amount of control allele frequency (default 0.1)
+  -R T/N ratio_control   Maximum value of the ratio between normal and tumor (default 0.1)
+  -m min_lod_score       Minimum lod score (default 8.0)
+  -r rna.bam             The path to the RNA bam file
 ```
 
