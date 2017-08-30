@@ -31,10 +31,10 @@ optional arguments:
   -h, --help             Show this help message and exit
   --version              Show program's version number and exit
   -S samtools_params     Samtools params
-  -t min_tumor_misrate   Minimum amount of tumor allele frequency (default 0.1)
-  -c max_control_misrate Maximum amount of control allele frequency (default 0.1)
-  -R T/N ratio_control   Maximum value of the ratio between normal and tumor (default 0.1)
-  -m min_lod_score       Minimum lod score (default 8.0)
+  -t min_tumor_misrate   The minimum amount of tumor allele frequency (default 0.1)
+  -c max_control_misrate The maximum amount of control allele frequency (default 0.1)
+  -R T/N ratio_control   The maximum value of the ratio between normal and tumor (default 0.1)
+  -m min_lod_score       The minimum lod score (default 8.0)
   -r rna.bam             The path to the RNA bam file
 ```
 
