@@ -40,7 +40,7 @@ optional arguments:
 
 ## Create the hotspot database
 
-We use this tool to create the hotspot_mutations.bed.
+We use the following tool to create the hotspot_mutations.bed.
 ```
 https://github.com/ken0-1n/GenomonHotspotDatabase
 ```
