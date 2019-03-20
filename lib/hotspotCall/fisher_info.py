@@ -265,7 +265,7 @@ class FisherInfo:
         return self.get_strand_ratio(self.get_ctrl_base_plus_strand(base), self.get_ctrl_base_minus_strand(base))
 
     def get_rna_strand_ratio(self, base):
-        return self.get_strand_ratio(self.get_rna_plus_base_strand(base), self.get_rna_base_minus_strand(base))
+        return self.get_strand_ratio(self.get_rna_base_plus_strand(base), self.get_rna_base_minus_strand(base))
 
     def get_fisher_pvalue(self,base):
         odds_ratio, fisher_pvalue = fisher(
