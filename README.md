@@ -9,9 +9,9 @@ samtools
 ## Install
 
 ```
-wget https://github.com/ken0-1n/GenomonHotspotCall/archive/v0.1.0.tar.gz
-tar xzvf v0.1.0.tar.gz
-cd GenomonHotspotCall-0.1.0/
+wget https://github.com/ken0-1n/GenomonHotspotCall/archive/v0.2.0.tar.gz
+tar xzvf v0.2.0.tar.gz
+cd GenomonHotspotCall-0.2.0/
 python setup.py install
 ```
 
@@ -40,7 +40,7 @@ optional arguments:
   -1 sample1             Tumor sample name used by vcf
   -2 sample2             Control sample name used by vcf
   -3 sample3             RNA sample name used by vcf
-  -f ref_genome          reference_genome used by vcf
+  -f ref_genome          Reference genome used by vcf
 ```
 
 ## Create the hotspot database
