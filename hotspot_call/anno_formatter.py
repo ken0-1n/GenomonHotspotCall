@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 import sys, os
-from fisher_info import FisherInfo
+from .fisher_info import FisherInfo
 
 
 def make_record(fi, alt, is_rna):

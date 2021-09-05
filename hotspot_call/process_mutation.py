@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 import sys, os, re, subprocess
-import anno_formatter
-import vcf_formatter
-from fisher_info import FisherInfo
+from . import anno_formatter
+from . import vcf_formatter
+from .fisher_info import FisherInfo
 
 def read_hotspot_file(hotspot_file):
     tmp_list = []
@@ -33,21 +33,21 @@ def print_anno_header(is_rna, hOUT):
     header_str = "Chr\tStart\tEnd\tRef\tAlt\tdepth_tumor\tvariantNum_tumor\tdepth_normal\tvariantNum_normal\tbases_tumor\tbases_normal\tA_C_G_T_tumor\tA_C_G_T_normal\tmisRate_tumor\tstrandRatio_tumor\tmisRate_normal\tstrandRatio_normal\tP-value(fisher)\tscore"
     if is_rna:
         header_str = header_str +"\tdepth_RNA\tvariant_RNA\tbases_RNA\ttmisRate_RNA"
-    print >> hOUT, header_str
+    print(header_str, file=hOUT)
 
 def print_vcf_header(is_rna, sample1, sample2, sample_rna, ref_fa, ref_dict, hOUT):
-    print >> hOUT, '##fileformat=VCFv4.2'
+    print('##fileformat=VCFv4.2',file=hOUT)
     # print info and format
-    print >> hOUT, '##INFO=<ID=FP,Number=1,Type=Float,Description="Minus logarithm of the p-value by Fishers exact test">'
-    print >> hOUT, '##INFO=<ID=LS,Number=1,Type=Float,Description="LOD Score of Hotspot Call">'
-    print >> hOUT, '##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">'
-    print >> hOUT, '##FORMAT=<ID=DPF,Number=1,Type=Integer,Description="Read depth in the forward strand">'
-    print >> hOUT, '##FORMAT=<ID=DPR,Number=1,Type=Integer,Description="Read depth in the reverse strand">'
-    print >> hOUT, '##FORMAT=<ID=AD,Number=1,Type=Integer,Description="Allelic depth">'
-    print >> hOUT, '##FORMAT=<ID=ADF,Number=1,Type=Integer,Description="Allelic depth in the forward strand">'
-    print >> hOUT, '##FORMAT=<ID=ADR,Number=1,Type=Integer,Description="Allelic depth in the reverse strand">'
-    print >> hOUT, '##FORMAT=<ID=AF,Number=1,Type=Float,Description="Allele frequency">'
-    print >> hOUT, '##FORMAT=<ID=SB,Number=1,Type=Float,Description="Strand bias">'
+    print('##INFO=<ID=FP,Number=1,Type=Float,Description="Minus logarithm of the p-value by Fishers exact test">',file=hOUT)
+    print('##INFO=<ID=LS,Number=1,Type=Float,Description="LOD Score of Hotspot Call">',file=hOUT)
+    print('##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">',file=hOUT)
+    print('##FORMAT=<ID=DPF,Number=1,Type=Integer,Description="Read depth in the forward strand">',file=hOUT)
+    print('##FORMAT=<ID=DPR,Number=1,Type=Integer,Description="Read depth in the reverse strand">',file=hOUT)
+    print('##FORMAT=<ID=AD,Number=1,Type=Integer,Description="Allelic depth">',file=hOUT)
+    print('##FORMAT=<ID=ADF,Number=1,Type=Integer,Description="Allelic depth in the forward strand">',file=hOUT)
+    print('##FORMAT=<ID=ADR,Number=1,Type=Integer,Description="Allelic depth in the reverse strand">',file=hOUT)
+    print('##FORMAT=<ID=AF,Number=1,Type=Float,Description="Allele frequency">',file=hOUT)
+    print('##FORMAT=<ID=SB,Number=1,Type=Float,Description="Strand bias">',file=hOUT)
 
     # print reference information
     hIN = open(ref_dict)
@@ -56,14 +56,14 @@ def print_vcf_header(is_rna, sample1, sample2, sample_rna, ref_fa, ref_dict, hOU
         if F[0] == '@SQ':
             ID = F[1].replace('SN:','')
             length = F[2].replace('LN:','')
-            print >> hOUT, '##contig=<ID='+ID+',length='+length+'>'
-    print >> hOUT, '##reference='+ref_fa
+            print('##contig=<ID='+ID+',length='+length+'>',file=hOUT)
+    print('##reference='+ref_fa,file=hOUT)
 
     # print_header
     samples = sample1+"\t"+sample2
     if is_rna:
         samples = samples +"\t"+ sample_rna
-    print >> hOUT, "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t"+samples
+    print("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t"+samples,file=hOUT)
 
 def call(hotspot_file, output_file, bam_tumor, bam_control, mpileup_params, min_tumor_misrate, max_ctrl_misrate, bam_rna, min_lod_score, ratio_ctrl, is_anno, sample1, sample2, sample_rna, ref_fa):
 
@@ -88,12 +88,12 @@ def call(hotspot_file, output_file, bam_tumor, bam_control, mpileup_params, min_
 
         # TODO: error message
         if F[1] != F[2]:
-            print >> sys.stderr, "Invalid position in the hotspot database: "+ F[0] +"\t"+ F[1] +"\t"+ F[2]
+            print("Invalid position in the hotspot database: "+ F[0] +"\t"+ F[1] +"\t"+ F[2], file=sys.stderr)
             continue
         # TODO: error message
         for tmp_alt in hotspot_alts:
             if tmp_alt not in "ACGTacgt":
-                print >> sys.stderr, "Invalid Alt in the mutations.bed: "+ F[0] +"\t"+ F[1] +"\t"+ F[2] +"\t"+ hotspot_alts
+                print("Invalid Alt in the mutations.bed: "+ F[0] +"\t"+ F[1] +"\t"+ F[2] +"\t"+ hotspot_alts, file=sys.stderr)
            
         mpileup_cmd = ""
         if is_rna:
@@ -110,7 +110,7 @@ def call(hotspot_file, output_file, bam_tumor, bam_control, mpileup_params, min_
         end_of_pipe = pileup.stdout
         for mpileup in end_of_pipe:
             fi = FisherInfo()
-            mp_list = str( mpileup.translate( None, '\n' ) ).split( '\t' )
+            mp_list = mpileup.decode().strip('\n').split( '\t' )
             fi.set_mpileup_data(mp_list)
             fi.set_ref(hotspot_ref)
             for alt in hotspot_alts:
@@ -123,7 +123,7 @@ def call(hotspot_file, output_file, bam_tumor, bam_control, mpileup_params, min_
                     record = anno_formatter.make_record(fi, alt, is_rna)
                 else:
                     record = vcf_formatter.make_record(fi, alt, is_rna)
-                print >> hOUT, record
+                print(record,file=hOUT)
 
     FNULL.close()
     hOUT.close()

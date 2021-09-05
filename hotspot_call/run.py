@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 
-import process_mutation
+from . import process_mutation
 import sys, os, subprocess
 
-def main(args):
+def hotspot_call_main(args):
 
     # should add validity check for arguments
     tumor_bam = args.tumor_bam
@@ -26,32 +26,32 @@ def main(args):
 
     # file existence check
     if not os.path.exists(tumor_bam):
-        print >> sys.stderr, "No tumor bam file: " + tumor_bam
+        print("No tumor bam file: " + tumor_bam, file=sys.stderr)
         sys.exit(1)
 
     if not os.path.exists(tumor_bam + ".bai") and not os.path.exists(re.sub(r'bam$', "bai", tumor_bam)):
-        print >> sys.stderr, "No index for tumor bam file: " + tumor_bam
+        print("No index for tumor bam file: " + tumor_bam,file=sys.stderr)
         sys.exit(1)
 
     if not os.path.exists(control_bam):
-        print >> sys.stderr, "No control bam file: " + control_bam
+        print("No control bam file: " + control_bam, file=sys.stderr)
         sys.exit(1)
 
     if not os.path.exists(control_bam + ".bai") and not os.path.exists(re.sub(r'bam$', "bai", control_bam)):
-        print >> sys.stderr, "No index for control bam file: " + control_bam
+        print("No index for control bam file: " + control_bam, file=sys.stderr)
         sys.exit(1)
 
     if not os.path.exists(hotspot_file):
-        print >> sys.stderr, "No hotspot mutations list: " + hotspot_file
+        print("No hotspot mutations list: " + hotspot_file, file=sys.stderr)
         sys.exit(1)
 
     if is_rna:
         if not os.path.exists(rna_bam):
-            print >> sys.stderr, "No rna bam file: " + rna_bam
+            print("No rna bam file: " + rna_bam, file=sys.stderr)
             sys.exit(1)
 
         if not os.path.exists(rna_bam + ".bai") and not os.path.exists(re.sub(r'bam$', "bai", rna_bam)):
-            print >> sys.stderr, "No index for rna bam file: " + rna_bam
+            print("No index for rna bam file: " + rna_bam, file=sys.stderr)
             sys.exit(1)
 
     if not is_anno:

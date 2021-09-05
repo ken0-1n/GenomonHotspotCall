@@ -92,11 +92,11 @@ class FisherInfo:
     
         # Remove '^.' and '$'
         read_bases = remove_chr.sub( '', read_bases )
-        read_bases = read_bases.translate( None, '$' ) 
+        read_bases = read_bases.replace('$','') 
     
         # Error check
         if len( read_bases ) != len( qual_list ):
-            print >> sys.stderr, ("mpileup data is not good: {0}, {1}".format( read_bases, read_bases ))
+            print("mpileup data is not good: {0}, {1}".format( read_bases, read_bases ), file=sys.stderr)
             return None
         # Count mismatch
         return read_bases
