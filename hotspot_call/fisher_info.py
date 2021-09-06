@@ -3,7 +3,7 @@
 import math
 import numpy
 from scipy.stats import fisher_exact as fisher
-import re
+import re, sys
 
 target = re.compile( '([\+\-])([0-9]+)([ACGTNRMacgtnrm]+)' )
 remove_chr = re.compile( '\^.' )
@@ -93,13 +93,16 @@ class FisherInfo:
         # Remove '^.' and '$'
         read_bases = remove_chr.sub( '', read_bases )
         read_bases = read_bases.replace('$','') 
+        read_bases = read_bases.replace('.', self.ref.upper()) 
+        read_bases = read_bases.replace(',', self.ref.lower()) 
     
         # Error check
         if len( read_bases ) != len( qual_list ):
-            print("mpileup data is not good: {0}, {1}".format( read_bases, read_bases ), file=sys.stderr)
+            print("mpileup data is not good: {0}, {1}".format( read_bases, qual_list ), file=sys.stderr)
             return None
         # Count mismatch
         return read_bases
+
 
     def set_mpileup_data(self, mp_list):
 

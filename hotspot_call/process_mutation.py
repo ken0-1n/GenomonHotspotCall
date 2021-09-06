@@ -95,14 +95,20 @@ def call(hotspot_file, output_file, bam_tumor, bam_control, mpileup_params, min_
             if tmp_alt not in "ACGTacgt":
                 print("Invalid Alt in the mutations.bed: "+ F[0] +"\t"+ F[1] +"\t"+ F[2] +"\t"+ hotspot_alts, file=sys.stderr)
            
-        mpileup_cmd = ""
+        mpileup_cmd = ["samtools", "mpileup", "-r", mutReg]
+        mpileup_cmd.extend(m_params)
+
+        seq_filename, seq_ext1 = os.path.splitext(bam_tumor)
+        seq_filename, seq_ext2 = os.path.splitext(bam_control)
+
         if is_rna:
-            mpileup_cmd = ["samtools", "mpileup", "-r", mutReg]
-            mpileup_cmd.extend(m_params)
+            seq_filename, seq_ext3 = os.path.splitext(bam_rna)
+            if seq_ext1 == ".cram" or seq_ext2 == ".cram" or seq_ext3 == ".cram":
+                mpileup_cmd.extend(["-f",ref_fa])
             mpileup_cmd.extend([bam_tumor, bam_control, bam_rna])
         else:
-            mpileup_cmd = ["samtools", "mpileup", "-r", mutReg]
-            mpileup_cmd.extend(m_params)
+            if seq_ext1 == ".cram" or seq_ext2 == ".cram":
+                mpileup_cmd.extend(["-f",ref_fa])
             mpileup_cmd.extend([bam_tumor, bam_control])
 
         # print mpileup_cmd
@@ -111,8 +117,8 @@ def call(hotspot_file, output_file, bam_tumor, bam_control, mpileup_params, min_
         for mpileup in end_of_pipe:
             fi = FisherInfo()
             mp_list = mpileup.decode().strip('\n').split( '\t' )
-            fi.set_mpileup_data(mp_list)
             fi.set_ref(hotspot_ref)
+            fi.set_mpileup_data(mp_list)
             for alt in hotspot_alts:
                 if fi.get_lod_score(alt) < min_lod_score: continue
                 if fi.get_tumor_misrate(alt) < min_tumor_misrate: continue
