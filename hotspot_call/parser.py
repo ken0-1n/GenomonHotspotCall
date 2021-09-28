@@ -9,6 +9,8 @@ import sys
 import argparse
 from .version import __version__
 from .run import hotspot_call_main
+from .xls2bed_snv import database_snv_main
+from .xls2bed_indel import database_indel_main
 
 def create_parser():
     prog = "hotspotCall"
@@ -35,8 +37,28 @@ def create_parser():
         mutation_parser.add_argument( '-3', '--sample3', help = '3rd sample name ( rnaseq  )', type = str, default = None)
         mutation_parser.add_argument( '-f', '--ref_fa',  help = 'Reference genome', type = str, default = None)
         return mutation_parser
-    
+   
+    def _create_snv_database_parser(subparsers):
+
+        snv_db_parser = subparsers.add_parser("dbsnv", help = "create hotspot snv database")
+        snv_db_parser.add_argument("in_xls_hotspot", metavar = "in_xls_hotspot", type = str, help = "the path to the xls hotspot file")
+        snv_db_parser.add_argument("in_maf_hotspot", metavar = "in_maf_hotspot", type = str, help = "the path to the maf hotspot file")
+        snv_db_parser.add_argument("out_snv_database", metavar = "out_snv_database", type = str, help = "the path to the output hotspot database file")
+        return snv_db_parser
+
+    def _create_indel_database_parser(subparsers):
+
+        indel_db_parser = subparsers.add_parser("dbindel", help = "create hotspot indel database")
+        indel_db_parser.add_argument("in_xls_hotspot", metavar = "in_xls_hotspot", type = str, help = "the path to the xls hotspot file")
+        indel_db_parser.add_argument("in_maf_hotspot", metavar = "in_maf_hotspot", type = str, help = "the path to the maf hotspot file")
+        indel_db_parser.add_argument("out_indel_database", metavar = "out_indel_database", type = str, help = "the path to the output hotspot database file")
+        return indel_db_parser
+
     mutation_parser = _create_mutation_parser(subparsers)
     mutation_parser.set_defaults(func = hotspot_call_main)
+    snv_db_parser = _create_snv_database_parser(subparsers)
+    snv_db_parser.set_defaults(func = database_snv_main)
+    indel_db_parser = _create_indel_database_parser(subparsers)
+    indel_db_parser.set_defaults(func = database_indel_main)
     return parser
     

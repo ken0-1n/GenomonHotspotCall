@@ -103,14 +103,14 @@ def call(hotspot_file, output_file, bam_tumor, bam_control, mpileup_params, min_
 
         if is_rna:
             seq_filename, seq_ext3 = os.path.splitext(bam_rna)
-            if seq_ext1 == ".cram" or seq_ext2 == ".cram" or seq_ext3 == ".cram":
-                mpileup_cmd.extend(["-f",ref_fa])
+            # if seq_ext1 == ".cram" or seq_ext2 == ".cram" or seq_ext3 == ".cram":
+            #     mpileup_cmd.extend(["-f",ref_fa])
             mpileup_cmd.extend([bam_tumor, bam_control, bam_rna])
         else:
-            if seq_ext1 == ".cram" or seq_ext2 == ".cram":
-                mpileup_cmd.extend(["-f",ref_fa])
+            # if seq_ext1 == ".cram" or seq_ext2 == ".cram":
+            #     mpileup_cmd.extend(["-f",ref_fa])
             mpileup_cmd.extend([bam_tumor, bam_control])
-
+        
         # print mpileup_cmd
         pileup = subprocess.Popen(mpileup_cmd, stdout=subprocess.PIPE, stderr = FNULL)
         end_of_pipe = pileup.stdout
