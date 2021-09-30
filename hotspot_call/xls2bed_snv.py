@@ -1,5 +1,6 @@
 import gzip, os, sys
 import pandas as pd
+import subprocess
 
 def make_hotspot_dict(in_tmp_hotspot):
 
@@ -92,10 +93,23 @@ def database_snv_main(args):
 
     d_hotspot, d_codon, d_genome_pos_symbol = make_hotspot_dict(in_tmp_hotspot)
     d_mut = get_hotspot_record(args.in_maf_hotspot, d_hotspot, d_codon, d_genome_pos_symbol)
-    
-    with open(args.out_snv_database, 'w') as hout: 
+   
+    with open(out_prefix +".bed", 'w') as hout: 
         for key in d_mut:
-           print(d_mut[key], file=hout)
+           l = d_mut[key].split('\t')
+           print("\t".join(["chr"+l[0],str(int(l[1])-1),l[2],l[3],l[4],l[5],l[6],l[7],l[8]]), file=hout)
 
-    # os.remove(in_tmp_hotspot)
+    subprocess.check_call(['sort', '-u', '-k', '1,1', '-k', '2,2n', '-k', '3,3n', '-o', out_prefix+".sorted.bed", out_prefix+".bed"]) 
+
+    subprocess.check_call(['liftOver', '-bedPlus=3', out_prefix+".sorted.bed", args.map_chain, out_prefix+".liftedover.bed", out_prefix+".unmapped.bed"]) 
+
+    with open(out_prefix+".liftedover.bed", 'r') as hin, open(args.out_snv_database, 'w') as hout: 
+        for line in hin:
+           l = line.rstrip('\n').split('\t')
+           print("\t".join([l[0],str(int(l[1])+1),l[2],l[3],l[4],l[5],l[6],l[7],l[8]]), file=hout)
+
+    os.remove(out_prefix +".bed")
+    os.remove(out_prefix +".tsv")
+    os.remove(out_prefix+".sorted.bed")
+    os.remove(out_prefix+".liftedover.bed")
 
