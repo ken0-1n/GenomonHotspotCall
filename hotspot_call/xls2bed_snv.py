@@ -99,17 +99,21 @@ def database_snv_main(args):
            l = d_mut[key].split('\t')
            print("\t".join(["chr"+l[0],str(int(l[1])-1),l[2],l[3],l[4],l[5],l[6],l[7],l[8]]), file=hout)
 
-    subprocess.check_call(['sort', '-u', '-k', '1,1', '-k', '2,2n', '-k', '3,3n', '-o', out_prefix+".sorted.bed", out_prefix+".bed"]) 
+    subprocess.check_call(['sort', '-k', '1,1', '-k', '2,2n', '-k', '3,3n', '-k', '4,4', '-k', '5,5', '-o', out_prefix+".sorted.bed", out_prefix+".bed"]) 
 
-    subprocess.check_call(['liftOver', '-bedPlus=3', out_prefix+".sorted.bed", args.map_chain, out_prefix+".liftedover.bed", out_prefix+".unmapped.bed"]) 
+    subprocess.check_call(['uniq', out_prefix+".sorted.bed", out_prefix+".uniq.bed"]) 
+
+    subprocess.check_call(['liftOver', '-bedPlus=3', out_prefix+".uniq.bed", args.map_chain, out_prefix+".liftedover.bed", out_prefix+".unmapped.bed"]) 
 
     with open(out_prefix+".liftedover.bed", 'r') as hin, open(args.out_snv_database, 'w') as hout: 
         for line in hin:
            l = line.rstrip('\n').split('\t')
            print("\t".join([l[0],str(int(l[1])+1),l[2],l[3],l[4],l[5],l[6],l[7],l[8]]), file=hout)
 
-    os.remove(out_prefix +".bed")
-    os.remove(out_prefix +".tsv")
-    os.remove(out_prefix+".sorted.bed")
-    os.remove(out_prefix+".liftedover.bed")
+    if not args.debug:
+        os.remove(out_prefix +".bed")
+        os.remove(out_prefix +".tsv")
+        os.remove(out_prefix+".sorted.bed")
+        os.remove(out_prefix+".uniq.bed")
+        os.remove(out_prefix+".liftedover.bed")
 

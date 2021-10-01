@@ -45,6 +45,7 @@ def create_parser():
         snv_db_parser.add_argument("in_maf_hotspot", metavar = "in_maf_hotspot", type = str, help = "the path to the maf hotspot file")
         snv_db_parser.add_argument("out_snv_database", metavar = "out_snv_database", type = str, help = "the path to the output hotspot database file")
         snv_db_parser.add_argument("map_chain", metavar = "map_chain", type = str, help = "the path to the map chainfile for liftover")
+        snv_db_parser.add_argument( '-d', '--debug', help = 'debug_mode', action = 'store_true', default = False )
         return snv_db_parser
 
     def _create_indel_database_parser(subparsers):
