@@ -21,6 +21,7 @@ def hotspot_call_main(args):
     sample2 = args.sample2
     sample_rna = args.sample3
     is_rna = True if rna_bam else False
+    is_ctrl = True if control_bam else False
     is_anno = True if args.print_format == 'anno' else False
     ref_fa = args.ref_fa
 
@@ -33,13 +34,14 @@ def hotspot_call_main(args):
         print("No index for tumor bam file: " + tumor_bam,file=sys.stderr)
         sys.exit(1)
 
-    if not os.path.exists(control_bam):
-        print("No control bam file: " + control_bam, file=sys.stderr)
-        sys.exit(1)
+    if is_ctrl:
+        if not os.path.exists(control_bam):
+            print("No control bam file: " + control_bam, file=sys.stderr)
+            sys.exit(1)
 
-    if not os.path.exists(control_bam + ".bai") and not os.path.exists(re.sub(r'bam$', "bai", control_bam)):
-        print("No index for control bam file: " + control_bam, file=sys.stderr)
-        sys.exit(1)
+        if not os.path.exists(control_bam + ".bai") and not os.path.exists(re.sub(r'bam$', "bai", control_bam)):
+            print("No index for control bam file: " + control_bam, file=sys.stderr)
+            sys.exit(1)
 
     if not os.path.exists(hotspot_file):
         print("No hotspot mutations list: " + hotspot_file, file=sys.stderr)
@@ -55,8 +57,10 @@ def hotspot_call_main(args):
             sys.exit(1)
 
     if not is_anno:
-        if args.sample1 == None or args.sample2 == None:
-            raise ValueError('--sample1 and --sample2 are required for vcf.') 
+        if args.sample1 == None:
+            raise ValueError('--sample1 is required for vcf.') 
+        if is_ctrl and args.sample2 == None:
+            raise ValueError('--sample2 is required for vcf.') 
         if args.ref_fa == None:
             raise ValueError('--ref_fa is required for vcf.') 
 

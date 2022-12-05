@@ -3,6 +3,7 @@
 import math
 import numpy
 from scipy.stats import fisher_exact as fisher
+from scipy.special import btdtri
 import re, sys
 
 target = re.compile( '([\+\-])([0-9]+)([ACGTNRMacgtnrm]+)' )
@@ -284,6 +285,14 @@ class FisherInfo:
         else:
             val = -math.log( fisher_pvalue, 10 )
         return val
+
+    def calc_btdtri(self,base):
+
+        self.get_tumor_base_total(base)
+        beta_01  = float(btdtri( int(self.get_tumor_base_total(base)) + 1, int(self.get_tumor_base_total(self.ref)) + 1, 0.1 ))
+        beta_mid = float( int(self.get_tumor_base_total(base)) + 1 ) / float( int(self.get_tumor_base_total(self.ref)) + int(self.get_tumor_base_total(base)) + 2 )
+        beta_09  = float(btdtri( int(self.get_tumor_base_total(base)) + 1, int(self.get_tumor_base_total(self.ref)) + 1, 0.9 ))
+        return (beta_01, beta_mid, beta_09)
 
     def lod_qual(self, base):
         score = float(0)

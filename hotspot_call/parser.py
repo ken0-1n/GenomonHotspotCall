@@ -22,9 +22,9 @@ def create_parser():
     
         mutation_parser = subparsers.add_parser("main", help = "calling hotspot")
         mutation_parser.add_argument("tumor_bam", metavar = "tumor.bam", type = str, help = "the path to the tumor bam file")
-        mutation_parser.add_argument("control_bam", metavar = "control.bam", type = str, help = "the path to the control bam file")
         mutation_parser.add_argument("output_file", metavar = "output_file", type = str, help = "the path to the output file")
         mutation_parser.add_argument("hotspot_file", metavar = "hotspot_mutations.bed", type = str, help = "the bed format file that lists mutations")
+        mutation_parser.add_argument('-C', "--control_bam", metavar = "control.bam", type = str, help = "the path to the control bam file", default = None)
         mutation_parser.add_argument('-O', '--print_format', choices = ['vcf','anno'], help = 'Print VCF or anno(TSV) format',  default = 'anno' )
         mutation_parser.add_argument('-S', metavar = 'samtools_params', type = str, default = "-B -q 20 -Q2 -d 10000000")
         mutation_parser.add_argument('-t', metavar = "min_tumor_misrate", default = 0.1, type = float)
