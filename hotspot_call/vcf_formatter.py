@@ -45,9 +45,8 @@ def make_record(fi, alt, is_rna, is_ctrl):
         fi.get_ctrl_base_minus_strand(alt),
         fi.get_ctrl_misrate(alt)
         )
-        ctrl_strand_ratio = fi.get_ctrl_strand_ratio(alt)
-        if ctrl_strand_ratio > 0:
-            outstr = outstr + ':{0:.3f}'.format(ctrl_strand_ratio)
+        if fi.get_ctrl_misrate(alt) > 0:
+            outstr = outstr + ':{0:.3f}'.format(fi.get_ctrl_strand_ratio(alt))
         else:
             outstr = outstr + ":."
 
@@ -62,9 +61,8 @@ def make_record(fi, alt, is_rna, is_ctrl):
         fi.get_rna_base_minus_strand(alt),
         fi.get_rna_misrate(alt)
         ))
-        rna_strand_ratio = fi.get_rna_strand_ratio(alt)
-        if rna_strand_ratio > 0:
-            outstr = outstr + ':{0:.3f}'.format(rna_strand_ratio)
+        if fi.get_rna_misrate(alt) > 0:
+            outstr = outstr + ':{0:.3f}'.format(fi.get_rna_strand_ratio(alt))
         else:
             outstr = outstr + ":."
 

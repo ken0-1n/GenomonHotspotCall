@@ -48,12 +48,14 @@ def make_record(fi, alt, is_rna, is_ctrl):
 
     if is_ctrl:
         outstr = outstr + '\t{0:.3f}'.format(fi.get_ctrl_misrate(alt))
-        ctrl_strand_ratio = fi.get_ctrl_strand_ratio(alt)
-        if ctrl_strand_ratio > 0:
-            outstr = outstr + '\t{0:.3f}'.format(ctrl_strand_ratio)
+        if fi.get_ctrl_misrate(alt) > 0:
+            outstr = outstr + '\t{0:.3f}'.format(fi.get_ctrl_strand_ratio(alt))
         else:
             outstr = outstr + "\t---"
         outstr = outstr + '\t{0:.3f}'.format(fi.get_fisher_pvalue(alt))
+    else:
+        b10, bm, b90 = fi.calc_btdtri(alt)
+        outstr = outstr + '\t{0:.3f}\t{1:.3f}\t{2:.3f}'.format(b10, bm, b90)
 
     outstr = outstr + '\t{0:.3f}'.format(fi.get_lod_score(alt))
 

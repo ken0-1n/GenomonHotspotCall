@@ -82,7 +82,33 @@ def print_vcf_header(is_rna, sample1, sample2, sample_rna, ref_fa, ref_dict, hOU
     print("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t"+samples,file=hOUT)
 
 
-def pileup_count()
+def make_pileup_cmmand(mutReg, m_params, is_rna, is_ctrl, bam_tumor, bam_control, bam_rna):
+    mpileup_cmd = ["samtools", "mpileup", "-r", mutReg]
+    mpileup_cmd.extend(m_params)
+
+    if is_rna:
+        if is_ctrl:
+            mpileup_cmd.extend([bam_tumor, bam_control, bam_rna])
+        else:
+            print('Error: This tool not supported without entering the matced control and rnaseq bam.', file=sys.stderr)
+            sys.exit(1)
+    else:
+        if is_ctrl:
+            mpileup_cmd.extend([bam_tumor, bam_control])
+        else:
+            mpileup_cmd.extend([bam_tumor])
+    return mpileup_cmd
+        
+
+def is_filter_fisher_info(fi, alt, min_lod_score, min_tumor_misrate, max_ctrl_misrate, ratio_ctrl, is_ctrl):
+    ret = False
+    if fi.get_lod_score(alt) < min_lod_score or fi.get_tumor_misrate(alt) < min_tumor_misrate:
+         ret = True
+    if is_ctrl:
+        if fi.get_ctrl_misrate(alt) > max_ctrl_misrate or fi.get_ctrl_misrate(alt) > (fi.get_tumor_misrate(alt) * ratio_ctrl):
+             ret = True
+    return ret
+
 
 def call(hotspot_file, output_file, bam_tumor, bam_control, mpileup_params, min_tumor_misrate, max_ctrl_misrate, bam_rna, min_lod_score, ratio_ctrl, is_anno, sample1, sample2, sample_rna, ref_fa):
 
@@ -115,21 +141,8 @@ def call(hotspot_file, output_file, bam_tumor, bam_control, mpileup_params, min_
             if tmp_alt not in "ACGTacgt":
                 print("Invalid Alt in the mutations.bed: "+ F[0] +"\t"+ F[1] +"\t"+ F[2] +"\t"+ hotspot_alts, file=sys.stderr)
            
-        mpileup_cmd = ["samtools", "mpileup", "-r", mutReg]
-        mpileup_cmd.extend(m_params)
+        mpileup_cmd = make_pileup_cmmand(mutReg, m_params, is_rna, is_ctrl, bam_tumor, bam_control, bam_rna)
 
-        if is_rna:
-            if is_ctrl:
-                mpileup_cmd.extend([bam_tumor, bam_control, bam_rna])
-            else:
-                print('Error: This tool not supported without entering the matced control and rnaseq bam.', file=sys.stderr)
-                sys.exit(1)
-        else:
-            if is_ctrl:
-                mpileup_cmd.extend([bam_tumor, bam_control])
-            else:
-                mpileup_cmd.extend([bam_tumor])
-        
         # print mpileup_cmd
         pileup = subprocess.Popen(mpileup_cmd, stdout=subprocess.PIPE, stderr = FNULL)
         end_of_pipe = pileup.stdout
@@ -139,12 +152,7 @@ def call(hotspot_file, output_file, bam_tumor, bam_control, mpileup_params, min_
             fi.set_ref(hotspot_ref)
             fi.set_mpileup_data(mp_list)
             for alt in hotspot_alts:
-                if fi.get_lod_score(alt) < min_lod_score: continue
-                if fi.get_tumor_misrate(alt) < min_tumor_misrate: continue
-                if is_ctrl:
-                    if fi.get_ctrl_misrate(alt) > max_ctrl_misrate: continue
-                    if fi.get_ctrl_misrate(alt) > (fi.get_tumor_misrate(alt) * ratio_ctrl): continue
-
+                if is_filter_fisher_info(fi, alt, min_lod_score, min_tumor_misrate, max_ctrl_misrate, ratio_ctrl, is_ctrl): continue
                 if is_anno:
                     record = anno_formatter.make_record(fi, alt, is_rna, is_ctrl)
                 else:
